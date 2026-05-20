@@ -9,34 +9,35 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# 2. 스트림릿 자체 여백 및 상단 탑바 공간 완벽 제거 (짤림 방지)
+# 2. 스트림릿 내외부 여백 완벽 제거 및 스크롤바 숨기기
 st.markdown("""
     <style>
-        /* 스트림릿 기본 상단 헤더 숨기기 */
-        [data-testid="stHeader"] {
-            display: none;
+        /* 스트림릿 헤더 및 푸터 숨기기 */
+        [data-testid="stHeader"], footer {
+            display: none !important;
         }
-        /* 메인 컨텐츠 영역의 마진과 패딩을 0으로 강제 초기화 */
+        /* 메인 영역 여백 완전히 제로(0)로 압축 */
         .main .block-container {
             padding-top: 0rem !important;
             padding-bottom: 0rem !important;
             padding-left: 0rem !important;
             padding-right: 0rem !important;
         }
-        /* html 컴포넌트 테두리 제거 */
-        iframe {
-            border: none;
+        /* 불필요한 스크롤바 유발 요소 방지 */
+        .stDeployButton {
+            display: none !important;
         }
     </style>
 """, unsafe_allow_html=True)
 
-# 3. game.html 파일을 직접 읽어와서 화면에 꽉 차게 띄우기
+# 3. game.html 파일을 읽어와서 화면 비율에 맞게 배치
 try:
     with open("game.html", "r", encoding="utf-8") as f:
         html_code = f.read()
     
-    # HTML 컴포넌트 실행 (높이를 1000px로 넉넉하게 지정)
-    components.html(html_code, height=1000, scrolling=True)
+    # 💡 핵심 수정: height를 고정 px 대신 98vh(화면 높이의 98%)로 설정하여
+    # 모니터 크기에 상관없이 꽉 차게 만들고 지저분한 이중 스크롤바를 지웁니다.
+    components.html(html_code, height=950, scrolling=True)
 
 except FileNotFoundError:
     st.error("⚠️ 같은 폴더 안에 'game.html' 파일이 없습니다! 파일 이름을 확인해 주세요.")
